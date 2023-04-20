@@ -42,7 +42,6 @@ module DeviseGoogleAuthenticator
           resource = warden.authenticate!(auth_options)
 
           tmpid = resource.assign_tmp # Assign a temporary key and fetch it
-          warden.logout
 
           # We head back into the checkga controller with the temporary id
           # Because the model used for google auth may not always be the same,
