@@ -4,13 +4,7 @@ module DeviseGoogleAuthenticator
       extend ActiveSupport::Concern
 
       included do
-        if Rails.version >= '4'
-          before_action :check_request_and_redirect_to_check_totp,
-                         if: :user_signing_in?
-        else
-          before_filter :check_request_and_redirect_to_check_totp,
-                         if: :user_signing_in?
-        end
+        before_action :check_request_and_redirect_to_check_totp, if: :user_signing_in?
 
         define_method :checkga_resource_path_name do |resource, id|
           name = resource.class.name.singularize.underscore
@@ -42,7 +36,7 @@ module DeviseGoogleAuthenticator
           resource = warden.authenticate!(auth_options)
 
           tmpid = resource.assign_tmp # Assign a temporary key and fetch it
-          warden.logout
+          # warden.logout
 
           # We head back into the checkga controller with the temporary id
           # Because the model used for google auth may not always be the same,
