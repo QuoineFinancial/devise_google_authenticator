@@ -1,9 +1,9 @@
 module DeviseGoogleAuthenticator
   module Controllers # :nodoc:
     module Helpers # :nodoc:
-      def google_authenticator_qrcode(user, qualifier=nil, issuer=nil)
+      def google_authenticator_qrcode(user, qualifier = nil, issuer = nil)
         username = username_from_email(user.email)
-        app = user.class.ga_appname || Rails.application.class.parent_name
+        app = user.class.ga_appname || rails_appname
         data = "otpauth://totp/#{otpauth_user(username, app, qualifier)}?secret=#{user.gauth_secret}"
         data << "&issuer=#{issuer}" if !issuer.nil?
         data = Rack::Utils.escape(data)
@@ -19,6 +19,13 @@ module DeviseGoogleAuthenticator
         (/^(.*)@/).match(email)[1]
       end
 
+      def rails_appname
+        if Rails.version < '6'
+          Rails.application.class.parent_name
+        else
+          Rails.application.class.module_parent_name
+        end
+      end
     end
   end
 end
